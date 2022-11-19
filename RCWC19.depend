@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1668656190 source:f:\graduacao-analise-desenvolvimento-sistemas\pim-iv-nov-2022\pim-iv\registercustomerwithcovid19\rcwc19\main.c
+	<stdio.h>
+	<stdlib.h>
+
