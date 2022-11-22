@@ -3,3 +3,10 @@
 	<stdio.h>
 	<stdlib.h>
 
+1669044161 source:f:\graduacao-analise-desenvolvimento-sistemas\pim-iv-nov-2022\pim-iv\registercustomerwithcovid19\pimiv2022\main.c
+	<stdio.h>
+	<string.h>
+	<locale.h>
+	<stdbool.h>
+	<stdlib.h>
+
