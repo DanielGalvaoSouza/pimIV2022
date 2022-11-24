@@ -4,12 +4,40 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
+typedef struct {
+    char Codigo[40];
+    char Nome[120];
+    char CPF[20];
+    char Telefone[20];
+    char Endereco[150];
+    char DataNascimento[15];
+    char Email[120];
+    char DataDoDiagnostico[15];
+    char ComorbidadeDoPaciente[20];
+} DadosPacientes;
+
 bool usuarioValido = false;
 const int QUANTIDADE_CARACTERES = 30;
 char DadosLogin[30] = "";
 char DadosSenha[30] = "";
-
+DadosPacientes dadosPacientes[30];
+const char COMORBIDADE_DIABETES[20] = "DIABETES";
+const char COMORBIDADE_OBESIDADE[20] = "OBESIDADE";
+const char COMORBIDADE_HIPERTENSAO[20] = "HIPERTENSAO";
+const char COMORBIDADE_TUBERCULOSE[20] = "TUBERCULOSE";
+const char COMORBIDADE_OUTROS[20] = "OUTROS";
+char GUID_PRIMARY_KEY[40];
+const char ARQUIVO_PACIENTES[30] = "RCWC-BASE-DADOS-PACIENTES.txt";
+const char ARQUIVO_COMORBIDADE[50] = "RCWC-BASE-DADOS-PACIENTES-COM-COMORBIDADES.txt";
 char ValorChaveExtraido[160];
+int indiceVetor = 0;
+int dayAge;
+int monthAge;
+int yearAge;
+int dayCurrent;
+int monthCurrent;
+int yearCurrent;
+
 void ResgataValorChave(char *chave)
 {
     int i = 0;
@@ -87,33 +115,32 @@ void ResgataPacientes()
 
 }
 
-void EscreverPacientes(char *Nome,
-    char *CPF,
-    char *Telefone,
-    char *Endereco,
-    char *DataNascimento,
-    char *Email,
-    char *DataDoDiagnostico,
-    char *ComorbidadeDoPaciente)
+void EscreverPacientes()
 {
     FILE* funcaoComArquivo;
     char conteudoDoArquivo;
-    funcaoComArquivo = fopen("RCWC-BASE-DADOS-PACIENTES.txt", "W");
+    funcaoComArquivo = fopen(ARQUIVO_PACIENTES, "w");
 
     if (NULL == funcaoComArquivo) {
-        printf("NÃO FOI POSSÍVEL ENCONTRAR OS DADOS RELACIONADOS AS CREDENCIAIS DE ACESSO AO APLICATIVO. TENTE CONFIGURAR O APLICATIVO ANTES DE UTILIZA-LO.\n");
+        printf("NÃO FOI POSSÍVEL ENCONTRAR OS DADOS RELACIONADOS AOS PACIENTES.\n");
     }
 
     char conteudoLinha[500];
+    int i = 0;
+    int totalPacientesNaLista = sizeof(dadosPacientes) / sizeof(dadosPacientes[0]);
 
-    fprintf(funcaoComArquivo, "NOME=%s|", Nome);
-    fprintf(funcaoComArquivo, "CPF=%s|", CPF);
-    fprintf(funcaoComArquivo, "TELEFONE=%s|", Telefone);
-    fprintf(funcaoComArquivo, "ENDERECO=%s|", Endereco);
-    fprintf(funcaoComArquivo, "DATANASCIMENTO=%s|", DataNascimento);
-    fprintf(funcaoComArquivo, "EMAIL=%s|", Email);
-    fprintf(funcaoComArquivo, "DATADODIAGNOSTICO=%s|", DataDoDiagnostico);
-    fprintf(funcaoComArquivo, "COMORBIDADEDOPACIENTE=%s|", ComorbidadeDoPaciente);
+    for(i=0; i<=totalPacientesNaLista; i++)
+    {
+        fprintf(funcaoComArquivo, "CODIGO=%s|\n", dadosPacientes[i].Codigo);
+        fprintf(funcaoComArquivo, "NOME=%s|\n", dadosPacientes[i].Nome);
+        fprintf(funcaoComArquivo, "CPF=%s|\n", dadosPacientes[i].CPF);
+        fprintf(funcaoComArquivo, "TELEFONE=%s|\n", dadosPacientes[i].Telefone);
+        fprintf(funcaoComArquivo, "ENDERECO=%s|\n", dadosPacientes[i].Endereco);
+        fprintf(funcaoComArquivo, "DATANASCIMENTO=%s|\n", dadosPacientes[i].DataNascimento);
+        fprintf(funcaoComArquivo, "EMAIL=%s|\n", dadosPacientes[i].Email);
+        fprintf(funcaoComArquivo, "DATADODIAGNOSTICO=%s|\n", dadosPacientes[i].DataDoDiagnostico);
+        fprintf(funcaoComArquivo, "COMORBIDADEDOPACIENTE=%s|\n", dadosPacientes[i].ComorbidadeDoPaciente);
+    }
 
     fclose(funcaoComArquivo);
 
@@ -204,7 +231,7 @@ void AutenticacaoDeOperador()
         {
             system("cls");
             Apresentacao_Aplicativo();
-            printf("SUAS CREDENCIAIS NÃO FORAM ACEITAS NO PROCESSO DE AUTENTICAÇÃO. TENTE NOVAMENTE!\n");
+            printf("SUAS CREDENCIAIS NÃO FORAM ACEITAS NO PROCESSO DE AUTENTICAÇÃO. TENTE NOVAMENTE!\n\n");
 
         }
 
@@ -214,127 +241,29 @@ void AutenticacaoDeOperador()
     //printf("CREDENCIAL RECONHECIDA. SEU ACESSO ESTÁ LIBERADO.\n");
 
 }
-/*
-https://www.inf.pucrs.br/~pinho/LaproI/Structs/Structs.htm
-*/
-typedef struct {
-    char Codigo[40];
-    char Nome[120];
-    char CPF[20];
-    char Telefone[20];
-    char Endereco[150];
-    char DataNascimento[15];
-    char Email[120];
-    char DataDoDiagnostico[15];
-    char ComorbidadeDoPaciente[20];
 
-
-} DadosPacientes;
-
-typedef struct {
-    char Nome[120];
-    char CPF[20];
-    char Telefone[20];
-    char Endereco[150];
-    char DataNascimento[10];
-    char Email[120];
-    char DataDoDiagnostico[10];
-    char ComorbidadeDoPaciente[20];
-} Autenticacao;
-
-/*Autenticacao objetoAutenticacao[3];
-
-    int indiceVetor = 1;
-
-    NOME:;
-    CPF:;
-    TELEFONE:;
-    ENDERECO:;
-    DATANASCIMENTO:;
-    EMAIL:;
-    DATADODIAGNOSTICO:;
-    COMORBIDADEDOPACIENTE:;
-
-    DIABETES
-    OBESIDADE
-    HIPERTENSAO
-    TUBERCULOSE
-    OUTROS
-
-    const char COMORBIDADE_DIABETES[20] = "DIABETES";
-    const char COMORBIDADE_OBESIDADE[20] = "OBESIDADE";
-    const char COMORBIDADE_HIPERTENSAO[20] = "HIPERTENSAO";
-    const char COMORBIDADE_TUBERCULOSE[20] = "TUBERCULOSE";
-    const char COMORBIDADE_OUTROS[20] = "OUTROS";
-
-    strcpy(objetoAutenticacao[indiceVetor].Nome, "Eduardo Bryan Ramos");
-    strcpy(objetoAutenticacao[indiceVetor].CPF, "862.262.603-27");
-    strcpy(objetoAutenticacao[indiceVetor].Telefone, "(27) 2676-8460");
-    strcpy(objetoAutenticacao[indiceVetor].Endereco, "Rua Cravo, 784 - Jabaeté - Vila Velha - ES");
-    strcpy(objetoAutenticacao[indiceVetor].DataNascimento, "26/09/1963");
-    strcpy(objetoAutenticacao[indiceVetor].Email, "eduardo.bryan.ramos@abareias.com.br");
-    strcpy(objetoAutenticacao[indiceVetor].DataDoDiagnostico, "21/11/2022");
-    strcpy(objetoAutenticacao[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_OBESIDADE);
-
-    int totalAutenticacao = sizeof(objetoAutenticacao) / sizeof(objetoAutenticacao[0]);
-
-    int i;
-    for(i=0; i<=totalAutenticacao; i++)
-    {
-        printf("Nome: %s \n", objetoAutenticacao[i].Nome);
-        printf("CPF: %s \n", objetoAutenticacao[i].CPF);
-        printf("Telefone: %s \n", objetoAutenticacao[i].Telefone);
-        printf("Endereco: %s \n", objetoAutenticacao[i].Endereco);
-        printf("DataNascimento: %s \n", objetoAutenticacao[i].DataNascimento);
-        printf("Email: %s \n", objetoAutenticacao[i].Email);
-        printf("DataDoDiagnostico: %s \n", objetoAutenticacao[i].DataDoDiagnostico);
-        printf("ComorbidadeDoPaciente: %s \n \n", objetoAutenticacao[i].ComorbidadeDoPaciente);
-    }*/
-
-DadosPacientes dadosPacientes[30];
-const char COMORBIDADE_DIABETES[20] = "DIABETES";
-const char COMORBIDADE_OBESIDADE[20] = "OBESIDADE";
-const char COMORBIDADE_HIPERTENSAO[20] = "HIPERTENSAO";
-const char COMORBIDADE_TUBERCULOSE[20] = "TUBERCULOSE";
-const char COMORBIDADE_OUTROS[20] = "OUTROS";
-char GUID_PRIMARY_KEY[40];
-
-void EscreverPacientes2()
+bool FoiArquivoGerado(char *nomearquivo)
 {
     FILE* funcaoComArquivo;
-    char conteudoDoArquivo;
-    funcaoComArquivo = fopen("RCWC-BASE-DADOS-PACIENTES.txt", "w");
+    bool ExisteArquivo = true;
+
+    funcaoComArquivo = fopen(nomearquivo, "r");
 
     if (NULL == funcaoComArquivo) {
-        printf("NÃO FOI POSSÍVEL ENCONTRAR OS DADOS RELACIONADOS AOS PACIENTES.\n");
-    }
-
-    char conteudoLinha[500];
-    int i = 0;
-    int totalPacientesNaLista = sizeof(dadosPacientes) / sizeof(dadosPacientes[0]);
-
-    for(i=0; i<=totalPacientesNaLista; i++)
-    {
-        fprintf(funcaoComArquivo, "CODIGO=%s|\n", dadosPacientes[i].Codigo);
-        fprintf(funcaoComArquivo, "NOME=%s|\n", dadosPacientes[i].Nome);
-        fprintf(funcaoComArquivo, "CPF=%s|\n", dadosPacientes[i].CPF);
-        fprintf(funcaoComArquivo, "TELEFONE=%s|\n", dadosPacientes[i].Telefone);
-        fprintf(funcaoComArquivo, "ENDERECO=%s|\n", dadosPacientes[i].Endereco);
-        fprintf(funcaoComArquivo, "DATANASCIMENTO=%s|\n", dadosPacientes[i].DataNascimento);
-        fprintf(funcaoComArquivo, "EMAIL=%s|\n", dadosPacientes[i].Email);
-        fprintf(funcaoComArquivo, "DATADODIAGNOSTICO=%s|\n", dadosPacientes[i].DataDoDiagnostico);
-        fprintf(funcaoComArquivo, "COMORBIDADEDOPACIENTE=%s|\n", dadosPacientes[i].ComorbidadeDoPaciente);
+        ExisteArquivo = false;
     }
 
     fclose(funcaoComArquivo);
 
+    return ExisteArquivo;
 }
 
 void EscreverPacientesComComorbidade()
 {
     FILE* funcaoComArquivo;
+
     char conteudoDoArquivo;
-    funcaoComArquivo = fopen("RCWC-BASE-DADOS-PACIENTES-COM-COMORBIDADES.txt", "w");
+    funcaoComArquivo = fopen(ARQUIVO_COMORBIDADE, "w");
 
     if (NULL == funcaoComArquivo) {
         printf("NÃO FOI POSSÍVEL ENCONTRAR OS DADOS RELACIONADOS AOS PACIENTES.\n");
@@ -394,7 +323,6 @@ void GenerateGuidToPrimaryKey()
     //
 }
 
-int indiceVetor = 0;
 int CarregarDadosIniciais()
 {
     char keyRow[10] = "1";
@@ -492,8 +420,6 @@ int CarregarDadosIniciais()
 }
 
 //https://overiq.com/c-examples/c-program-to-calculate-the-difference-of-two-dates-in-years-months-and-days/
-//int valid_date(int date, int mon, int year);
-
 int valid_date(int day, int mon, int year)
 {
     int is_valid = 1, is_leap = 0;
@@ -554,13 +480,6 @@ int valid_date(int day, int mon, int year)
     return is_valid;
 
 }
-
-int dayAge;
-int monthAge;
-int yearAge;
-int dayCurrent;
-int monthCurrent;
-int yearCurrent;
 
 int calculaIdade()
 {
@@ -637,77 +556,65 @@ void FormularioDeEntrada()
     system("cls");
     Apresentacao_Aplicativo();
 
-    int ch;
-    const char PROXIMO_CAMPO[50] = "Pressione a tecla ENTER para próximo campo";
+
+    //const char PROXIMO_CAMPO[50] = "Pressione a tecla ENTER para próximo campo";
 
     printf("\nA SEGUIR VOCÊ DEVE INFORMAR OS DADOS DO PACIENTE QUE DESEJA CADASTRAR\n\n");
-
+    int ch;
     while ((ch = getchar()) != '\n' && ch != EOF);
     printf("NOME: [Utilize no máximo %d caracteres]\n", sizeof(formularioNome));
-    fgets(formularioNome, sizeof(formularioNome), stdin);
+    gets(formularioNome);
 
-    puts(PROXIMO_CAMPO);
-    while ((ch = getchar()) != '\n' && ch != EOF);
+
     printf("CPF: [Utilize no máximo %d caracteres]\n", sizeof(formularioCPF));
-    fgets(formularioCPF, sizeof(formularioCPF), stdin);
+    gets(formularioCPF);
 
-    puts(PROXIMO_CAMPO);
-    while ((ch = getchar()) != '\n' && ch != EOF);
     printf("TELEFONE (DDD+NUMERO DE TELEFONE): [Utilize no máximo %d caracteres]\n", sizeof(formularioTelefone));
-    fgets(formularioTelefone, sizeof(formularioTelefone), stdin);
+    gets(formularioTelefone);
 
-    puts(PROXIMO_CAMPO);
-    while ((ch = getchar()) != '\n' && ch != EOF);
     printf("ENDEREÇO (RUA, NÚMERO, BAIRRO, CIDADE, ESTADO E CEP): [Utilize no máximo %d caracteres]\n", sizeof(formularioEndereco));
-    fgets(formularioEndereco, sizeof(formularioEndereco), stdin);
+    gets(formularioEndereco);
 
-    puts(PROXIMO_CAMPO);
-    while ((ch = getchar()) != '\n' && ch != EOF);
     printf("DATA DE NASCIMENTO: [Utilize no máximo %d caracteres] com a máscara dd/mm/aaaa\n", sizeof(formularioDataNascimento));
-    fgets(formularioDataNascimento, sizeof(formularioDataNascimento), stdin);
+    gets(formularioDataNascimento);
 
-    puts(PROXIMO_CAMPO);
-    while ((ch = getchar()) != '\n' && ch != EOF);
     printf("E-MAIL: [Utilize no máximo %d caracteres]\n", sizeof(formularioEmail));
-    fgets(formularioEmail, sizeof(formularioEmail), stdin);
+    gets(formularioEmail);
 
-    puts(PROXIMO_CAMPO);
-    while ((ch = getchar()) != '\n' && ch != EOF);
     printf("DATA DO DIAGNÓSTICO: [Utilize no máximo %d caracteres com a máscara dd/mm/aaaa]\n", sizeof(formularioDataDoDiagnostico));
-    fgets(formularioDataDoDiagnostico, sizeof(formularioDataDoDiagnostico), stdin);
+    gets(formularioDataDoDiagnostico);
 
-    puts(PROXIMO_CAMPO);
-    while ((ch = getchar()) != '\n' && ch != EOF);
+    //puts(PROXIMO_CAMPO);
     printf("COMORBIDADE DO PACIENTE (DIGITE D => DIABETES, O => OBESIDADE, H => HIPERTENSÃO, T => TUBERCULOSE, R => OUTROS OU DEIXE O CAMPO VAZIO PARA NENHUMA CORMOBIDADE): [Utilize no máximo %d caracteres]\n", sizeof(formularioComorbidadeDoPaciente));
-    fgets(formularioComorbidadeDoPaciente, sizeof(formularioComorbidadeDoPaciente), stdin);
+    gets(formularioComorbidadeDoPaciente);
 
     if(strstr(formularioComorbidadeDoPaciente, "D") != NULL && strcmp(formularioComorbidadeDoPaciente, "d") != NULL )
     {
-        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_DIABETES);
+        strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_DIABETES);
     }
     else if(strstr(formularioComorbidadeDoPaciente, "O") != NULL && strcmp(formularioComorbidadeDoPaciente, "o") != NULL )
     {
-        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_OBESIDADE);
+        strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_OBESIDADE);
 
     }
     else if(strstr(formularioComorbidadeDoPaciente, "H") != NULL && strcmp(formularioComorbidadeDoPaciente, "h") != NULL )
     {
-        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_HIPERTENSAO);
+        strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_HIPERTENSAO);
 
     }
     else if(strstr(formularioComorbidadeDoPaciente, "T") != NULL && strcmp(formularioComorbidadeDoPaciente, "t") != NULL )
     {
-        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_TUBERCULOSE);
+        strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_TUBERCULOSE);
 
     }
     else if(strstr(formularioComorbidadeDoPaciente, "R") != NULL && strcmp(formularioComorbidadeDoPaciente, "r") != NULL )
     {
-        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_OUTROS);
+        strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_OUTROS);
 
     }
     else
     {
-        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, "");
+        strcpy(formularioComorbidadeDoPaciente, "");
 
     }
 
@@ -722,17 +629,110 @@ void FormularioDeEntrada()
     strcpy(dadosPacientes[indiceVetor].DataNascimento, formularioDataNascimento);
     strcpy(dadosPacientes[indiceVetor].Email, formularioEmail);
     strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, formularioDataDoDiagnostico);
+    strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, formularioComorbidadeDoPaciente);
 
-    EscreverPacientes2();
+    MostraStructsPacientes(indiceVetor);
 
-    printf("PACIENTE CADASTRADO COM SUCESSO.");
+    EscreverPacientes();
 
+    bool arquivoComorbidadeGerado = FoiArquivoGerado(ARQUIVO_PACIENTES);
+
+    printf("PACIENTE CADASTRADO COM SUCESSO. ");
+
+    if(arquivoComorbidadeGerado)
+    {
+        printf("ARQUIVO COM TODOS OS PACIENTES FOI ATUALIZADO COM OS DADOS INSERIDOS.");
+    }else{
+        printf("HOUVE UMA FALHA AO GRAVAR OS PACIENTES EM UM ARQUIVO. PROCURE OS ALUNOS DO PIM IV OU VERIFIQUE O MANUAL PARA SOLUÇÃO DE PROBLEMAS.");
+    }
+
+    RetornaAoMenuPrincipal();
+
+}
+
+void MostraStructsPacientes(int indiceVetor)
+{
+    int i;
+    if(indiceVetor == 0){
+
+        int totalPacientesNaLista = sizeof(dadosPacientes) / sizeof(dadosPacientes[0]);
+
+        printf("SEGUE LISTA COMPLETA DE PACIENTES CADASTRADOS NO APLICATIVO.\n\n\n");
+
+        for(i=0;i<totalPacientesNaLista;i++)
+        {
+            printf("CODIGO=%s|\n", dadosPacientes[i].Codigo);
+            printf("NOME=%s|\n", dadosPacientes[i].Nome);
+            printf("CPF=%s|\n", dadosPacientes[i].CPF);
+            printf("TELEFONE=%s|\n", dadosPacientes[i].Telefone);
+            printf("ENDERECO=%s|\n", dadosPacientes[i].Endereco);
+            printf("DATANASCIMENTO=%s|\n", dadosPacientes[i].DataNascimento);
+            printf("EMAIL=%s|\n", dadosPacientes[i].Email);
+            printf("DATADODIAGNOSTICO=%s|\n", dadosPacientes[i].DataDoDiagnostico);
+            printf("COMORBIDADEDOPACIENTE=%s|\n\n\n", dadosPacientes[i].ComorbidadeDoPaciente);
+        }
+    }else{
+        printf("CODIGO=%s|\n", dadosPacientes[indiceVetor].Codigo);
+        printf("NOME=%s|\n", dadosPacientes[indiceVetor].Nome);
+        printf("CPF=%s|\n", dadosPacientes[indiceVetor].CPF);
+        printf("TELEFONE=%s|\n", dadosPacientes[indiceVetor].Telefone);
+        printf("ENDERECO=%s|\n", dadosPacientes[indiceVetor].Endereco);
+        printf("DATANASCIMENTO=%s|\n", dadosPacientes[indiceVetor].DataNascimento);
+        printf("EMAIL=%s|\n", dadosPacientes[indiceVetor].Email);
+        printf("DATADODIAGNOSTICO=%s|\n", dadosPacientes[indiceVetor].DataDoDiagnostico);
+        printf("COMORBIDADEDOPACIENTE=%s|\n\n\n", dadosPacientes[indiceVetor].ComorbidadeDoPaciente);
+    }
 }
 
 void GerarRelatorioComComorbidade()
 {
-    printf("Será gerado a lista com os pacientes com comorbidade no arquivo RCWC-BASE-DADOS-PACIENTES-COM-COMORBIDADES.txt.");
+    system("cls");
+    Apresentacao_Aplicativo();
+
+    printf("\n\nSERÁ GERADO A LISTA COM OS PACIENTES COM COMORBIDADE NO ARQUIVO %s.\n", ARQUIVO_COMORBIDADE);
+
     EscreverPacientesComComorbidade();
+
+    bool arquivoComorbidadeGerado = FoiArquivoGerado(ARQUIVO_COMORBIDADE);
+
+    if(arquivoComorbidadeGerado)
+    {
+        printf("\nREPOSTA DO PROCEDIMENTO: O arquivo %s foi gerado corretamente.", ARQUIVO_COMORBIDADE);
+    }else{
+        printf("\nREPOSTA DO PROCEDIMENTO: Houve uma falha durante a escrita. Procure os alunos do PIM IV ou consulte o manual entregue com o trabalho para saber o que fazer neste caso.");
+    }
+
+    RetornaAoMenuPrincipal();
+
+}
+
+void RetornaAoMenuPrincipal()
+{
+    char opcaoInformada[15];
+    const char OPCAO_SAIR[15] = "SAIR";
+    const char OPCAO_SAIR_MINUSCULO[15] = "sair";
+    const char OPCAO_MENU_PRINCIPAL[15] = "MENU PRINCIPAL";
+    const char OPCAO_MENU_PRINCIPAL_MINUSCULO[15] = "menu principal";
+
+    int ch;
+    while ((ch = getchar()) != '\n' && ch != EOF);
+
+    printf("\n\n********************************************************************************************\n");
+    printf("\nVOCÊ PODE ENCERRAR O APLICATIVO AGORA OU RETORNAR AO MENU PRINCIPAL\n\n");
+    printf("PARA PARA FINALIZAR O PROGRAMA DIGITE \"SAIR\" E PARA RETORNAR AO MENU PRINCIPAL DIGITE \"MENU PRINCIPAL\"\n");
+    gets(opcaoInformada);
+
+    if(strcmp(opcaoInformada, OPCAO_SAIR) == 0 || strcmp(opcaoInformada, OPCAO_SAIR_MINUSCULO) == 0)
+    {
+        exit(EXIT_SUCCESS);
+    }else if(strstr(opcaoInformada, OPCAO_MENU_PRINCIPAL) != NULL || strstr(opcaoInformada, OPCAO_MENU_PRINCIPAL_MINUSCULO) != NULL)
+    {
+        MenuInicial();
+    }
+
+    system("cls");
+    Apresentacao_Aplicativo();
+    RetornaAoMenuPrincipal();
 
 }
 
@@ -740,23 +740,32 @@ void MenuInicial()
 {
     char opcaoInformada[10];
     const char OPCAO_CADASTRO[10] = "CADASTRO";
+    const char OPCAO_CADASTRO_MINUSCULO[10] = "cadastro";
     const char OPCAO_LISTA[10] = "LISTA";
+    const char OPCAO_LISTA_MINUSCULO[10] = "lista";
+    const char OPCAO_SAIR[15] = "SAIR";
+    const char OPCAO_SAIR_MINUSCULO[15] = "sair";
 
     system("cls");
     Apresentacao_Aplicativo();
 
-    printf("ESTE É O MENU INICIAL VEJA ABAIXO AS OPÇÕES QUE SÃO POSSÍVEIS ACESSAR\n");
-    printf("DIGITE \"CADASTRO\" PARA IR PARA O PROCEDIMENTO DE CADASTRO OU \n\"LISTA\" PARA GERAR A LISTA PARA A SECRETARIA DA SAÚDE.\n");
+    printf("\nESTE É O MENU INICIAL VEJA ABAIXO AS OPÇÕES QUE SÃO POSSÍVEIS ACESSAR\n\n");
+    printf("DIGITE \"CADASTRO\" PARA IR PARA O PROCEDIMENTO DE CADASTRO \nOU \"LISTA\" PARA GERAR A LISTA PARA A SECRETARIA DA SAÚDE\n");
+    printf("OU AINDA PARA SAIR DIGITE \"SAIR\" E O APLICATIVO SERÁ ENCERRADO.\n");
     scanf("%s", opcaoInformada);
 
-    if(strcmp(opcaoInformada, OPCAO_CADASTRO) == 0)
+    if(strcmp(opcaoInformada, OPCAO_CADASTRO) == 0 || strcmp(opcaoInformada, OPCAO_CADASTRO_MINUSCULO) == 0)
     {
         FormularioDeEntrada();
 
     }
-    else if(strcmp(opcaoInformada, OPCAO_LISTA) == 0)
+    else if(strcmp(opcaoInformada, OPCAO_LISTA) == 0 || strcmp(opcaoInformada, OPCAO_LISTA_MINUSCULO) == 0)
     {
         GerarRelatorioComComorbidade();
+    }
+    else if(strcmp(opcaoInformada, OPCAO_SAIR) == 0 || strcmp(opcaoInformada, OPCAO_SAIR_MINUSCULO) == 0)
+    {
+        exit(EXIT_SUCCESS);
     }
 }
 

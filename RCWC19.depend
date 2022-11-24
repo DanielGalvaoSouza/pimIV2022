@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1669251225 source:f:\graduacao-analise-desenvolvimento-sistemas\pim-iv-nov-2022\pim-iv\registercustomerwithcovid19\pimiv2022\main.c
+1669300160 source:f:\graduacao-analise-desenvolvimento-sistemas\pim-iv-nov-2022\pim-iv\registercustomerwithcovid19\pimiv2022\main.c
 	<stdio.h>
 	<string.h>
 	<locale.h>
