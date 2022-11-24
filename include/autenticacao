@@ -1,0 +1,16 @@
+#ifndef AUTENTICACAO_
+#define AUTENTICACAO_
+
+
+class autenticacao
+{
+    public:
+        autenticacao();
+        virtual ~autenticacao();
+
+    protected:
+
+    private:
+};
+
+#endif // AUTENTICACAO_
