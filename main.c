@@ -2,6 +2,7 @@
 #include <string.h>
 #include <locale.h>
 #include <stdbool.h>
+#include <wchar.h>
 #include <stdlib.h>
 
 typedef struct {
@@ -14,6 +15,7 @@ typedef struct {
     char Email[120];
     char DataDoDiagnostico[15];
     char ComorbidadeDoPaciente[20];
+    int Idade;
 } DadosPacientes;
 
 bool usuarioValido = false;
@@ -29,14 +31,15 @@ const char COMORBIDADE_OUTROS[20] = "OUTROS";
 char GUID_PRIMARY_KEY[40];
 const char ARQUIVO_PACIENTES[30] = "RCWC-BASE-DADOS-PACIENTES.txt";
 const char ARQUIVO_COMORBIDADE[50] = "RCWC-BASE-DADOS-PACIENTES-COM-COMORBIDADES.txt";
+const char ARQUIVO_SEGURANCA[30] = "RCWC-BASE-DADOS-SEGURANCA.txt";
 char ValorChaveExtraido[160];
 int indiceVetor = 0;
-int dayAge;
-int monthAge;
-int yearAge;
-int dayCurrent;
-int monthCurrent;
-int yearCurrent;
+int DayAge;
+int MonthAge;
+int YearAge;
+int DayCurrent;
+int MonthCurrent;
+int YearCurrent;
 
 void ResgataValorChave(char *chave)
 {
@@ -65,34 +68,33 @@ void ResgataValorChave(char *chave)
     }
 }
 
-void LeituraDeArquivo()
+void ResgataValorChaveDadosPacientes(char *chave)
 {
-    FILE* ptr;
-    char ch;
+    int i = 0;
+    int j = 0;
+    bool isAKeyValue = false;
+    char charStart = '=';
+    char charEnd = '|';
 
-    // Opening file in reading mode
-    ptr = fopen("RCWC-BASE-DADOS.txt", "r");
-
-    if (NULL == ptr) {
-        printf("file can't be opened \n");
+    for(i=0; i < strlen(chave); i++)
+    {
+        char valueKey = chave[i];
+        if(valueKey == charStart)
+        {
+            isAKeyValue = true;
+        }
+        if(valueKey == charEnd)
+        {
+            isAKeyValue = false;
+        }
+        if(isAKeyValue && (valueKey != charStart && valueKey != charEnd))
+        {
+            ValorChaveExtraido[j] = chave[i];
+            j++;
+        }
     }
-
-    printf("content of this file are \n");
-
-    // Printing what is written in file
-    // character by character using loop.
-    do {
-        ch = fgetc(ptr);
-        printf("%c", ch);
-
-        // Checking if character is not EOF.
-        // If it is EOF stop eading.
-    } while (ch != EOF);
-
-    // Closing the file
-    fclose(ptr);
-    return 0;
 }
+
 
 void ResgataPacientes()
 {
@@ -117,6 +119,8 @@ void ResgataPacientes()
 
 void EscreverPacientes()
 {
+    setlocale (LC_CTYPE, "portuguese-brazilian");
+
     FILE* funcaoComArquivo;
     char conteudoDoArquivo;
     funcaoComArquivo = fopen(ARQUIVO_PACIENTES, "w");
@@ -140,6 +144,7 @@ void EscreverPacientes()
         fprintf(funcaoComArquivo, "EMAIL=%s|\n", dadosPacientes[i].Email);
         fprintf(funcaoComArquivo, "DATADODIAGNOSTICO=%s|\n", dadosPacientes[i].DataDoDiagnostico);
         fprintf(funcaoComArquivo, "COMORBIDADEDOPACIENTE=%s|\n", dadosPacientes[i].ComorbidadeDoPaciente);
+        fprintf(funcaoComArquivo, "IDADE=%d|\n\n\n", dadosPacientes[i].Idade);
     }
 
     fclose(funcaoComArquivo);
@@ -152,7 +157,7 @@ void ResgataCredenciais()
     char conteudoDoArquivo;
 
     // Opening file in reading mode
-    funcaoComArquivo = fopen("RCWC-BASE-DADOS-SEGURANCA.txt", "r");
+    funcaoComArquivo = fopen(ARQUIVO_SEGURANCA, "r");
 
     if (NULL == funcaoComArquivo) {
         printf("NÃO FOI POSSÍVEL ENCONTRAR OS DADOS RELACIONADOS AS CREDENCIAIS DE ACESSO AO APLICATIVO. TENTE CONFIGURAR O APLICATIVO ANTES DE UTILIZA-LO.\n");
@@ -260,10 +265,14 @@ bool FoiArquivoGerado(char *nomearquivo)
 
 void EscreverPacientesComComorbidade()
 {
+    setlocale (LC_CTYPE, "portuguese-brazilian");
+
     FILE* funcaoComArquivo;
 
     char conteudoDoArquivo;
     funcaoComArquivo = fopen(ARQUIVO_COMORBIDADE, "w");
+
+
 
     if (NULL == funcaoComArquivo) {
         printf("NÃO FOI POSSÍVEL ENCONTRAR OS DADOS RELACIONADOS AOS PACIENTES.\n");
@@ -285,7 +294,8 @@ void EscreverPacientesComComorbidade()
             fprintf(funcaoComArquivo, "DATANASCIMENTO=%s|\n", dadosPacientes[i].DataNascimento);
             fprintf(funcaoComArquivo, "EMAIL=%s|\n", dadosPacientes[i].Email);
             fprintf(funcaoComArquivo, "DATADODIAGNOSTICO=%s|\n", dadosPacientes[i].DataDoDiagnostico);
-            fprintf(funcaoComArquivo, "COMORBIDADEDOPACIENTE=%s|\n\n\n", dadosPacientes[i].ComorbidadeDoPaciente);
+            fprintf(funcaoComArquivo, "COMORBIDADEDOPACIENTE=%s|\n", dadosPacientes[i].ComorbidadeDoPaciente);
+            fprintf(funcaoComArquivo, "IDADE=%d|\n\n\n", dadosPacientes[i].Idade);
         }
     }
 
@@ -325,96 +335,185 @@ void GenerateGuidToPrimaryKey()
 
 int CarregarDadosIniciais()
 {
-    char keyRow[10] = "1";
-
-    GenerateGuidToPrimaryKey();
-    strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
-    strcpy(dadosPacientes[indiceVetor].Nome, "Eduardo Bryan Ramos");
-    strcpy(dadosPacientes[indiceVetor].CPF, "862.262.603-27");
-    strcpy(dadosPacientes[indiceVetor].Telefone, "(27) 2676-8460");
-    strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Cravo, 784 - Jabaeté - Vila Velha - ES");
-    strcpy(dadosPacientes[indiceVetor].DataNascimento, "26/09/1963");
-    strcpy(dadosPacientes[indiceVetor].Email, "eduardo.bryan.ramos@abareias.com.br");
-    strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "21/11/2022");
-    strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_OBESIDADE);
-
-    indiceVetor++;
-    GenerateGuidToPrimaryKey();
-
-    strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
-    strcpy(dadosPacientes[indiceVetor].Nome, "Fabiana Fátima Yasmin Caldeira");
-    strcpy(dadosPacientes[indiceVetor].CPF, "759.786.381-01");
-    strcpy(dadosPacientes[indiceVetor].Telefone, "(81) 3729-4662");
-    strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Benedita Pereira das Neves, 593 - Parque Capibaribe - São Lourenço da Mata - PE");
-    strcpy(dadosPacientes[indiceVetor].DataNascimento, "08/04/1989");
-    strcpy(dadosPacientes[indiceVetor].Email, "fabiana-caldeira87@way2goidiomas.com.br");
-    strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "01/02/2022");
-    strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_DIABETES);
-
-    indiceVetor++;
-    GenerateGuidToPrimaryKey();
-
-    strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
-    strcpy(dadosPacientes[indiceVetor].Nome, "Alana Kamilly Cláudia Cardoso");
-    strcpy(dadosPacientes[indiceVetor].CPF, "226.786.068-64");
-    strcpy(dadosPacientes[indiceVetor].Telefone, "(69) 3739-2068");
-    strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Margarita, 678 - Industrial - Porto Velho - RO");
-    strcpy(dadosPacientes[indiceVetor].DataNascimento, "17/01/2000");
-    strcpy(dadosPacientes[indiceVetor].Email, "alana-cardoso90@academiagolf.com.br");
-    strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "03/03/2022");
-    strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_HIPERTENSAO);
-
-    indiceVetor++;
-    GenerateGuidToPrimaryKey();
-
-    strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
-    strcpy(dadosPacientes[indiceVetor].Nome, "Renato Gustavo Vieira");
-    strcpy(dadosPacientes[indiceVetor].CPF, "136.999.100-24");
-    strcpy(dadosPacientes[indiceVetor].Telefone, "(44) 3951-6023");
-    strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Marginal, 196 - Jardim Morada do Sol - Paranavaí - PR");
-    strcpy(dadosPacientes[indiceVetor].DataNascimento, "20/07/1992");
-    strcpy(dadosPacientes[indiceVetor].Email, "renatogustavovieira@yahoo.se");
-    strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "06/08/2022");
-    strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_TUBERCULOSE);
-
-    indiceVetor++;
-    GenerateGuidToPrimaryKey();
-
-    strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
-    strcpy(dadosPacientes[indiceVetor].Nome, "Elias Marcos Samuel Jesus");
-    strcpy(dadosPacientes[indiceVetor].CPF, "279.784.323-19");
-    strcpy(dadosPacientes[indiceVetor].Telefone, "(69) 2548-9949");
-    strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Joinville, 516 - Setor 09 - Ariquemes - RO");
-    strcpy(dadosPacientes[indiceVetor].DataNascimento, "20/09/1999");
-    strcpy(dadosPacientes[indiceVetor].Email, "elias-jesus84@oi15.com.br");
-    strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "03/06/2020");
-    strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_OUTROS);
-
-    indiceVetor++;
-    GenerateGuidToPrimaryKey();
-
-    strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
-    strcpy(dadosPacientes[indiceVetor].Nome, "Fernanda Giovana Fogaça");
-    strcpy(dadosPacientes[indiceVetor].CPF, "127.051.358-39");
-    strcpy(dadosPacientes[indiceVetor].Telefone, "(63) 2711-2269");
-    strcpy(dadosPacientes[indiceVetor].Endereco, "Quadra 412 Sul Avenida NS 10, 924 - Plano Diretor Sul - Palmas - TO");
-    strcpy(dadosPacientes[indiceVetor].DataNascimento, "07/09/1986");
-    strcpy(dadosPacientes[indiceVetor].Email, "fernandagiovanafogaca@octagonbrasil.com.br");
-    strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "12/12/2021");
-    strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_OBESIDADE);
-
-    int i;
-    for(i=0; i<=indiceVetor; i++)
+    if(!FoiArquivoGerado(ARQUIVO_PACIENTES))
     {
-        printf("Codigo: %s \n", dadosPacientes[i].Codigo);
-        printf("Nome: %s \n", dadosPacientes[i].Nome);
-        printf("CPF: %s \n", dadosPacientes[i].CPF);
-        printf("Telefone: %s \n", dadosPacientes[i].Telefone);
-        printf("Endereco: %s \n", dadosPacientes[i].Endereco);
-        printf("DataNascimento: %s \n", dadosPacientes[i].DataNascimento);
-        printf("Email: %s \n", dadosPacientes[i].Email);
-        printf("DataDoDiagnostico: %s \n", dadosPacientes[i].DataDoDiagnostico);
-        printf("ComorbidadeDoPaciente: %s \n \n \n", dadosPacientes[i].ComorbidadeDoPaciente);
+        /*FILE* funcaoComArquivo;
+        char conteudoDoArquivo;
+        bool contemCaracteres;
+        const char CODIGO = "CODIGO";
+        const char NOME = "NOME";
+        const char CPF = "CPF";
+        const char TELEFONE = "TELEFONE";
+        const char ENDERECO = "ENDERECO";
+        const char DATA_NASCIMENTO = "DATANASCIMENTO";
+        const char EMAIL = "EMAIL";
+        const char DATA_DO_DIAGNOSTICO = "DATADODIAGNOSTICO";
+        const char COMORBIDADE_DO_PACIENTE = "COMORBIDADEDOPACIENTE";
+        const char IDADE = "IDADE";
+
+        // Opening file in reading mode
+        funcaoComArquivo = fopen(ARQUIVO_PACIENTES);
+
+        if (NULL == funcaoComArquivo) {
+            printf("");
+        }
+
+        char conteudoLinha[500];
+
+        while (fgets(conteudoLinha, sizeof(conteudoLinha), funcaoComArquivo))
+        {
+            contemCaracteres = strlen(conteudoLinha) > 0;
+
+            if(contemCaracteres)
+            {
+                char *findCodigo = strstr(conteudoLinha, CODIGO);
+
+                if(findCodigo)
+                {
+
+                }
+            }
+        }*/
+
+    }else{
+        char keyRow[10] = "1";
+
+        GenerateGuidToPrimaryKey();
+        strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
+        strcpy(dadosPacientes[indiceVetor].Nome, "Eduardo Bryan Ramos");
+        strcpy(dadosPacientes[indiceVetor].CPF, "862.262.603-27");
+        strcpy(dadosPacientes[indiceVetor].Telefone, "(27) 2676-8460");
+        strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Cravo, 784 - Jabaeté - Vila Velha - ES");
+        strcpy(dadosPacientes[indiceVetor].DataNascimento, "26/09/1963");
+        strcpy(dadosPacientes[indiceVetor].Email, "eduardo.bryan.ramos@abareias.com.br");
+        strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "21/11/2022");
+        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_OBESIDADE);
+
+        DayAge = 26;
+        MonthAge = 9;
+        YearAge = 1963;
+
+        DayCurrent = 21;
+        MonthCurrent = 11;
+        YearCurrent = 2022;
+
+        dadosPacientes[indiceVetor].Idade = calculaIdade();
+
+        indiceVetor++;
+        GenerateGuidToPrimaryKey();
+
+        strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
+        strcpy(dadosPacientes[indiceVetor].Nome, "Fabiana Fátima Yasmin Caldeira");
+        strcpy(dadosPacientes[indiceVetor].CPF, "759.786.381-01");
+        strcpy(dadosPacientes[indiceVetor].Telefone, "(81) 3729-4662");
+        strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Benedita Pereira das Neves, 593 - Parque Capibaribe - São Lourenço da Mata - PE");
+        strcpy(dadosPacientes[indiceVetor].DataNascimento, "08/04/1989");
+        strcpy(dadosPacientes[indiceVetor].Email, "fabiana-caldeira87@way2goidiomas.com.br");
+        strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "01/02/2022");
+        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_DIABETES);
+
+        DayAge = 8;
+        MonthAge = 4;
+        YearAge = 1989;
+
+        DayCurrent = 1;
+        MonthCurrent = 2;
+        YearCurrent = 2022;
+
+        dadosPacientes[indiceVetor].Idade = calculaIdade();
+
+        indiceVetor++;
+        GenerateGuidToPrimaryKey();
+
+        strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
+        strcpy(dadosPacientes[indiceVetor].Nome, "Alana Kamilly Cláudia Cardoso");
+        strcpy(dadosPacientes[indiceVetor].CPF, "226.786.068-64");
+        strcpy(dadosPacientes[indiceVetor].Telefone, "(69) 3739-2068");
+        strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Margarita, 678 - Industrial - Porto Velho - RO");
+        strcpy(dadosPacientes[indiceVetor].DataNascimento, "17/01/2000");
+        strcpy(dadosPacientes[indiceVetor].Email, "alana-cardoso90@academiagolf.com.br");
+        strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "03/03/2022");
+        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_HIPERTENSAO);
+
+        DayAge = 17;
+        MonthAge = 1;
+        YearAge = 2000;
+
+        DayCurrent = 3;
+        MonthCurrent = 3;
+        YearCurrent = 2022;
+
+        dadosPacientes[indiceVetor].Idade = calculaIdade();
+
+        indiceVetor++;
+        GenerateGuidToPrimaryKey();
+
+        strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
+        strcpy(dadosPacientes[indiceVetor].Nome, "Renato Gustavo Vieira");
+        strcpy(dadosPacientes[indiceVetor].CPF, "136.999.100-24");
+        strcpy(dadosPacientes[indiceVetor].Telefone, "(44) 3951-6023");
+        strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Marginal, 196 - Jardim Morada do Sol - Paranavaí - PR");
+        strcpy(dadosPacientes[indiceVetor].DataNascimento, "20/07/1992");
+        strcpy(dadosPacientes[indiceVetor].Email, "renatogustavovieira@yahoo.se");
+        strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "06/08/2022");
+        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_TUBERCULOSE);
+
+        DayAge = 20;
+        MonthAge = 7;
+        YearAge = 1992;
+
+        DayCurrent = 6;
+        MonthCurrent = 8;
+        YearCurrent = 2022;
+
+        dadosPacientes[indiceVetor].Idade = calculaIdade();
+
+        indiceVetor++;
+        GenerateGuidToPrimaryKey();
+
+        strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
+        strcpy(dadosPacientes[indiceVetor].Nome, "Elias Marcos Samuel Jesus");
+        strcpy(dadosPacientes[indiceVetor].CPF, "279.784.323-19");
+        strcpy(dadosPacientes[indiceVetor].Telefone, "(69) 2548-9949");
+        strcpy(dadosPacientes[indiceVetor].Endereco, "Rua Joinville, 516 - Setor 09 - Ariquemes - RO");
+        strcpy(dadosPacientes[indiceVetor].DataNascimento, "20/09/1999");
+        strcpy(dadosPacientes[indiceVetor].Email, "elias-jesus84@oi15.com.br");
+        strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "03/06/2020");
+        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_OUTROS);
+
+        DayAge = 20;
+        MonthAge = 9;
+        YearAge = 1999;
+
+        DayCurrent = 3;
+        MonthCurrent = 6;
+        YearCurrent = 2020;
+
+        dadosPacientes[indiceVetor].Idade = calculaIdade();
+
+        indiceVetor++;
+        GenerateGuidToPrimaryKey();
+
+        strcpy(dadosPacientes[indiceVetor].Codigo, GUID_PRIMARY_KEY);
+        strcpy(dadosPacientes[indiceVetor].Nome, "Fernanda Giovana Fogaça");
+        strcpy(dadosPacientes[indiceVetor].CPF, "127.051.358-39");
+        strcpy(dadosPacientes[indiceVetor].Telefone, "(63) 2711-2269");
+        strcpy(dadosPacientes[indiceVetor].Endereco, "Quadra 412 Sul Avenida NS 10, 924 - Plano Diretor Sul - Palmas - TO");
+        strcpy(dadosPacientes[indiceVetor].DataNascimento, "07/09/1986");
+        strcpy(dadosPacientes[indiceVetor].Email, "fernandagiovanafogaca@octagonbrasil.com.br");
+        strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, "12/12/2021");
+        strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, COMORBIDADE_OBESIDADE);
+
+        DayAge = 7;
+        MonthAge = 9;
+        YearAge = 1986;
+
+        DayCurrent = 12;
+        MonthCurrent = 12;
+        YearCurrent = 2021;
+
+        dadosPacientes[indiceVetor].Idade = calculaIdade();
+
     }
 
 }
@@ -424,7 +523,7 @@ int valid_date(int day, int mon, int year)
 {
     int is_valid = 1, is_leap = 0;
 
-    if (year >= 1800 && year <= 9999)
+    if (year >= 1800 && year <= 2100)
     {
 
         //  check whether year is a leap year
@@ -485,57 +584,57 @@ int calculaIdade()
 {
     int diaSubtracao, mesSubtracao, anoSubtracao;
 
-    if(!valid_date(dayAge, monthAge, yearAge))
+    if(!valid_date(DayAge, MonthAge, YearAge))
     {
         return 0;
     }
 
-    if(!valid_date(dayCurrent, monthCurrent, yearCurrent))
+    if(!valid_date(DayCurrent, MonthCurrent, YearCurrent))
     {
         return 0;
     }
 
-    if(dayCurrent < dayAge)
+    if(DayCurrent < DayAge)
     {
         // borrow days from february
-        if (monthCurrent == 3)
+        if (MonthCurrent == 3)
         {
             //  check whether year is a leap year
-            if ((yearCurrent % 4 == 0 && yearCurrent % 100 != 0) || (yearCurrent % 400 == 0))
+            if ((YearCurrent % 4 == 0 && YearCurrent % 100 != 0) || (YearCurrent % 400 == 0))
             {
-                dayCurrent += 29;
+                DayCurrent += 29;
             }
 
             else
             {
-                dayCurrent += 28;
+                DayCurrent += 28;
             }
         }
 
         // borrow days from April or June or September or November
-        else if (monthCurrent == 5 || monthCurrent == 7 || monthCurrent == 10 || monthCurrent == 12)
+        else if (MonthCurrent == 5 || MonthCurrent == 7 || MonthCurrent == 10 || MonthCurrent == 12)
         {
-           dayCurrent += 30;
+           DayCurrent += 30;
         }
 
         // borrow days from Jan or Mar or May or July or Aug or Oct or Dec
         else
         {
-           dayCurrent += 31;
+           DayCurrent += 31;
         }
 
-        monthCurrent = monthCurrent - 1;
+        MonthCurrent = MonthCurrent - 1;
     }
 
-    if (monthCurrent < monthAge)
+    if (MonthCurrent < MonthAge)
     {
-        monthCurrent += 12;
-        yearCurrent -= 1;
+        MonthCurrent += 12;
+        YearCurrent -= 1;
     }
 
-    diaSubtracao = dayCurrent - dayAge;
-    mesSubtracao = monthCurrent - monthAge;
-    anoSubtracao = yearCurrent - yearAge;
+    diaSubtracao = DayCurrent - DayAge;
+    mesSubtracao = MonthCurrent - MonthAge;
+    anoSubtracao = YearCurrent - YearAge;
 
     return anoSubtracao;
 
@@ -576,38 +675,44 @@ void FormularioDeEntrada()
     gets(formularioEndereco);
 
     printf("DATA DE NASCIMENTO: [Utilize no máximo %d caracteres] com a máscara dd/mm/aaaa\n", sizeof(formularioDataNascimento));
-    gets(formularioDataNascimento);
+    scanf("%d/%d/%d", &DayAge, &MonthAge, &YearAge);
+    snprintf(formularioDataNascimento, sizeof(formularioDataNascimento), "%d/%d/%d", DayAge, MonthAge, YearAge);
+
+    while ((ch = getchar()) != '\n' && ch != EOF);
 
     printf("E-MAIL: [Utilize no máximo %d caracteres]\n", sizeof(formularioEmail));
     gets(formularioEmail);
 
     printf("DATA DO DIAGNÓSTICO: [Utilize no máximo %d caracteres com a máscara dd/mm/aaaa]\n", sizeof(formularioDataDoDiagnostico));
-    gets(formularioDataDoDiagnostico);
+    scanf("%d/%d/%d", &DayCurrent, &MonthCurrent, &YearCurrent);
+    snprintf(formularioDataDoDiagnostico, sizeof(formularioDataDoDiagnostico), "%d/%d/%d", DayCurrent, MonthCurrent, YearCurrent);
+
+    while ((ch = getchar()) != '\n' && ch != EOF);
 
     //puts(PROXIMO_CAMPO);
-    printf("COMORBIDADE DO PACIENTE (DIGITE D => DIABETES, O => OBESIDADE, H => HIPERTENSÃO, T => TUBERCULOSE, R => OUTROS OU DEIXE O CAMPO VAZIO PARA NENHUMA CORMOBIDADE): [Utilize no máximo %d caracteres]\n", sizeof(formularioComorbidadeDoPaciente));
+    printf("COMORBIDADE DO PACIENTE (DIGITE d => DIABETES, o => OBESIDADE, h => HIPERTENSÃO, t => TUBERCULOSE, r => OUTROS OU DEIXE O CAMPO VAZIO PARA NENHUMA CORMOBIDADE): [Utilize no máximo %d caracteres]\n", sizeof(formularioComorbidadeDoPaciente));
     gets(formularioComorbidadeDoPaciente);
 
-    if(strstr(formularioComorbidadeDoPaciente, "D") != NULL && strcmp(formularioComorbidadeDoPaciente, "d") != NULL )
+    if(strstr(formularioComorbidadeDoPaciente, "d") != NULL)
     {
         strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_DIABETES);
     }
-    else if(strstr(formularioComorbidadeDoPaciente, "O") != NULL && strcmp(formularioComorbidadeDoPaciente, "o") != NULL )
+    else if(strstr(formularioComorbidadeDoPaciente, "o") != NULL )
     {
         strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_OBESIDADE);
 
     }
-    else if(strstr(formularioComorbidadeDoPaciente, "H") != NULL && strcmp(formularioComorbidadeDoPaciente, "h") != NULL )
+    else if(strstr(formularioComorbidadeDoPaciente, "h") != NULL )
     {
         strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_HIPERTENSAO);
 
     }
-    else if(strstr(formularioComorbidadeDoPaciente, "T") != NULL && strcmp(formularioComorbidadeDoPaciente, "t") != NULL )
+    else if(strstr(formularioComorbidadeDoPaciente, "t") != NULL )
     {
         strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_TUBERCULOSE);
 
     }
-    else if(strstr(formularioComorbidadeDoPaciente, "R") != NULL && strcmp(formularioComorbidadeDoPaciente, "r") != NULL )
+    else if(strstr(formularioComorbidadeDoPaciente, "r") != NULL )
     {
         strcpy(formularioComorbidadeDoPaciente, COMORBIDADE_OUTROS);
 
@@ -630,20 +735,41 @@ void FormularioDeEntrada()
     strcpy(dadosPacientes[indiceVetor].Email, formularioEmail);
     strcpy(dadosPacientes[indiceVetor].DataDoDiagnostico, formularioDataDoDiagnostico);
     strcpy(dadosPacientes[indiceVetor].ComorbidadeDoPaciente, formularioComorbidadeDoPaciente);
+    dadosPacientes[indiceVetor].Idade = calculaIdade();
 
     MostraStructsPacientes(indiceVetor);
 
-    EscreverPacientes();
+    char confirmacaoSalvamento[50];
+    printf("\n\nDESEJA SALVAR OS DADOS DO PACIENTE? \"s\" PARA SIM E \"n\" PARA NÃO.\n");
+    scanf("%s", confirmacaoSalvamento);
 
-    bool arquivoComorbidadeGerado = FoiArquivoGerado(ARQUIVO_PACIENTES);
-
-    printf("PACIENTE CADASTRADO COM SUCESSO. ");
-
-    if(arquivoComorbidadeGerado)
+    if(strstr(confirmacaoSalvamento, "s") != NULL)
     {
-        printf("ARQUIVO COM TODOS OS PACIENTES FOI ATUALIZADO COM OS DADOS INSERIDOS.");
-    }else{
-        printf("HOUVE UMA FALHA AO GRAVAR OS PACIENTES EM UM ARQUIVO. PROCURE OS ALUNOS DO PIM IV OU VERIFIQUE O MANUAL PARA SOLUÇÃO DE PROBLEMAS.");
+        EscreverPacientes();
+
+        bool arquivoComorbidadeGerado = FoiArquivoGerado(ARQUIVO_PACIENTES);
+
+        printf("\nPACIENTE CADASTRADO COM SUCESSO. ");
+
+        if(arquivoComorbidadeGerado)
+        {
+            printf("ARQUIVO COM TODOS OS PACIENTES FOI ATUALIZADO COM OS DADOS INSERIDOS.");
+        }else{
+            printf("HOUVE UMA FALHA AO GRAVAR OS PACIENTES EM UM ARQUIVO. PROCURE OS ALUNOS DO PIM IV OU VERIFIQUE O MANUAL PARA SOLUÇÃO DE PROBLEMAS.");
+        }
+
+        while ((ch = getchar()) != '\n' && ch != EOF);
+
+        char incluirNovoRegistro[50];
+        printf("\n\nDESEJA INCLUIR OUTRO PACIENTE? \"s\" PARA SIM E \"n\" PARA NÃO.\n");
+        scanf("%s", incluirNovoRegistro);
+
+        if(strstr(incluirNovoRegistro, "s") != NULL)
+        {
+            FormularioDeEntrada();
+            return;
+        }
+
     }
 
     RetornaAoMenuPrincipal();
@@ -652,35 +778,40 @@ void FormularioDeEntrada()
 
 void MostraStructsPacientes(int indiceVetor)
 {
-    int i;
+    int i = 0;
+    char idadePaciente[4];
     if(indiceVetor == 0){
-
         int totalPacientesNaLista = sizeof(dadosPacientes) / sizeof(dadosPacientes[0]);
 
         printf("SEGUE LISTA COMPLETA DE PACIENTES CADASTRADOS NO APLICATIVO.\n\n\n");
 
         for(i=0;i<totalPacientesNaLista;i++)
         {
-            printf("CODIGO=%s|\n", dadosPacientes[i].Codigo);
-            printf("NOME=%s|\n", dadosPacientes[i].Nome);
-            printf("CPF=%s|\n", dadosPacientes[i].CPF);
-            printf("TELEFONE=%s|\n", dadosPacientes[i].Telefone);
-            printf("ENDERECO=%s|\n", dadosPacientes[i].Endereco);
-            printf("DATANASCIMENTO=%s|\n", dadosPacientes[i].DataNascimento);
-            printf("EMAIL=%s|\n", dadosPacientes[i].Email);
-            printf("DATADODIAGNOSTICO=%s|\n", dadosPacientes[i].DataDoDiagnostico);
-            printf("COMORBIDADEDOPACIENTE=%s|\n\n\n", dadosPacientes[i].ComorbidadeDoPaciente);
+            printf("                 CODIGO: %s\n", dadosPacientes[i].Codigo);
+            printf("                   NOME: %s\n", dadosPacientes[i].Nome);
+            printf("                    CPF: %s\n", dadosPacientes[i].CPF);
+            printf("               TELEFONE: %s\n", dadosPacientes[i].Telefone);
+            printf("               ENDERECO: %s\n", dadosPacientes[i].Endereco);
+            printf("        DATA NASCIMENTO: %s\n", dadosPacientes[i].DataNascimento);
+            printf("                 E-MAIL: %s\n", dadosPacientes[i].Email);
+            printf("    DATA DO DIAGNOSTICO: %s\n", dadosPacientes[i].DataDoDiagnostico);
+            printf("COMORBIDADE DO PACIENTE: %s\n", dadosPacientes[i].ComorbidadeDoPaciente);
+            snprintf(idadePaciente, sizeof(idadePaciente), "%d", dadosPacientes[i].Idade);
+            printf("                  IDADE: %s", idadePaciente);
         }
+
     }else{
-        printf("CODIGO=%s|\n", dadosPacientes[indiceVetor].Codigo);
-        printf("NOME=%s|\n", dadosPacientes[indiceVetor].Nome);
-        printf("CPF=%s|\n", dadosPacientes[indiceVetor].CPF);
-        printf("TELEFONE=%s|\n", dadosPacientes[indiceVetor].Telefone);
-        printf("ENDERECO=%s|\n", dadosPacientes[indiceVetor].Endereco);
-        printf("DATANASCIMENTO=%s|\n", dadosPacientes[indiceVetor].DataNascimento);
-        printf("EMAIL=%s|\n", dadosPacientes[indiceVetor].Email);
-        printf("DATADODIAGNOSTICO=%s|\n", dadosPacientes[indiceVetor].DataDoDiagnostico);
-        printf("COMORBIDADEDOPACIENTE=%s|\n\n\n", dadosPacientes[indiceVetor].ComorbidadeDoPaciente);
+        printf("                  CODIGO: %s\n", dadosPacientes[indiceVetor].Codigo);
+        printf("                    NOME: %s\n", dadosPacientes[indiceVetor].Nome);
+        printf("                     CPF: %s\n", dadosPacientes[indiceVetor].CPF);
+        printf("                TELEFONE: %s\n", dadosPacientes[indiceVetor].Telefone);
+        printf("                ENDEREÇO: %s\n", dadosPacientes[indiceVetor].Endereco);
+        printf("         DATA NASCIMENTO: %s\n", dadosPacientes[indiceVetor].DataNascimento);
+        printf("                  E-MAIL: %s\n", dadosPacientes[indiceVetor].Email);
+        printf("     DATA DO DIAGNOSTICO: %s\n", dadosPacientes[indiceVetor].DataDoDiagnostico);
+        printf(" COMORBIDADE DO PACIENTE: %s\n", dadosPacientes[indiceVetor].ComorbidadeDoPaciente);
+        snprintf(idadePaciente, sizeof(idadePaciente), "%d", dadosPacientes[indiceVetor].Idade);
+        printf("                   IDADE: %s\n\n", idadePaciente);
     }
 }
 
@@ -776,166 +907,6 @@ int main() {
     CarregarDadosIniciais();
     MenuInicial();
 
-    /*dayAge = 5;
-    monthAge = 7;
-    yearAge = 1981;
-
-    dayCurrent = 23;
-    monthCurrent = 7;
-    yearCurrent = 2022;
-
-    char formularioDataDoDiagnostico[15];
-
-    while ((ch = getchar()) != '\n' && ch != EOF);
-    printf("DATA DO DIAGNÓSTICO: [Utilize no máximo %d caracteres com a mascara dd/mm/aaaa]\n", sizeof(formularioDataDoDiagnostico));
-    fgets(formularioDataDoDiagnostico, sizeof(formularioDataDoDiagnostico), stdin);*/
-
-    /*/printf("Data Digitada: %s", )
-    /*char idade[20];
-
-    idade[0] = "0";
-    //, "6", "/", "0", "5", "/", "1", "9", "9", "1"}
-    int posicao;
-    for(posicao = 0; posicao < strlen(idade); posicao++)
-    {
-        printf("posicao %s \n", idade[posicao]);
-    }*/
-
-    /*printf("Idade\n");
-    int char1;// = strtol(idade[0], NULL, 10);
-    fgets(&char1, sizeof(&char1), stdin);
-
-    char1 = char1 +1;
-    printf("Soma +1 %i", char1);*/
-
-
-    //char c = '1';
-    //int a = c - '0';
-
-    //printf("idade %i", char1);
-
-    /*int num;
-    char cNum[] = {0};
-    printf("Digite um numero: ");
-    scanf("%s%*c", cNum);
-    num = strtol(cNum, NULL, 10);
-    printf("%i", num);*/
-
-    /*char a = 'b';
-    int ia = (int)a;
-    */
-
-    //strcpy(idade, (char)dayCurrent);
-    //printf("idade: %d", ia);
-    //printf("Anos de idade: %d", calculaIdade());
     return 0;
 
-
-
-
-    //cadastrar o paciente
-    //calcular a idade do paciente
-    //os pacientes que possuem alguma comorbidade deve ser relacionados para elaboração de um arquivo.
-    //CarregarDadosIniciais();
-
-    //EscreverPacientes2();
-
-    //printf("Nome do Paciente no Objeto: %s \n", objetoAutenticacao[0].Nome);
-    //printf("CPF do Paciente no Objeto: %s \n", objetoAutenticacao[0].CPF);
-
-    //AutenticacaoDeOperador();
-
-    //char chave[160] = "LOGIN:12AGORAPOSSOCOLOCARUMVALORENORMENOVASENHA2022;\n";
-
-    //ResgataValorChave(chave);
-
-    //char *senha = ValorChaveExtraido;
-
-    //printf("%s", senha);
-/*
-
-
-    //compara textos corretamente
-    printf("\nSENHA É: %s", senha);
-    if(strcmp(senha, "NOVASENHA2022") == 0)
-    {
-        printf(" - A SENHA INFORMADA É A CORRETA");
-    }*/
-
-
-    //remove quebra de linha
-    /*int i=0;
-    char retorno[30] = "";
-    char chave[30] = "nussa:agora;\n";
-
-    int j = 0;
-    int lasCharInString = strlen(chave)-2;
-    bool isAKeyValue = 0;
-    char charStart = ":";
-    char charEnd = ";";
-
-    //printf("encontrado: %s; %d", chave, strlen(chave));
-
-    for(i=0; i <= lasCharInString; i++)
-    {
-        char valueKey = chave[i];
-        printf("%c", valueKey);
-    }*/
-
-    //RegataValorChave("SEQUENCIA DE CARACTERES");
-    /*ResgataCredenciais();
-    printf("Login: %s", DadosLogin);
-    printf("Senha: %s\n", DadosSenha);
-
-    printf("\nSENHA É: %s", DadosSenha);
-    if(strcmp(DadosSenha, "OPERADOR2023") == 0)
-    {
-        printf(" - A SENHA INFORMADA É A CORRETA");
-    }*/
-
-    /*if(strcmp(DadosLogin, ";OPERADOR") == 0)
-    {
-        printf("Este é o operador %s.\n", DadosLogin);
-    }else{
-        printf("Comparação não obteve exito %s %s", DadosLogin, ";OPERADOR");
-    }
-
-    if(strcmp(DadosSenha, ";OPERADOR2022") == 0)
-    {
-        printf("Esta é a senha correta.\n");
-    }
-
-    char entradaLogin[30] = "";
-    strcat(entradaLogin, ";");
-    printf("valor da função strcat %s", entradaLogin);*/
-    //exit(EXIT_SUCCESS);
-
-    //char loginPadraoSistema[QUANTIDADE_CARACTERES];
-
-    //char entradaLogin[30] = "";
-
-
-    //strcpy(entradaLogin, );
-
-    //printf("OPERADOR ENCONTRADO %s", entradaLogin);
-
-    /*if(strcmp(DadosLogin, entradaLogin) == 0)
-    {
-        printf("LOGIN OPERADOR UTILIZADO.-");
-    }else{
-        printf("COMPARAÇÃO DEU RUIM");
-    }
-    printf("FIM DO PROCESSO %s", entradaLogin);*/
-
-    /*char string[50] = "LOGIN;OPERADOR";
-    // Extract the first token
-    char * token = strtok(string, ";");
-    // loop through the string to extract all other tokens
-    while( token != NULL ) {
-      printf( " %s\n", token ); //printing each token
-      token = strtok(NULL, " ");
-    }
-    return 0;*/
-
-    return 0;
 }
