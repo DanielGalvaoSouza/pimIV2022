@@ -1,0 +1,387 @@
+nome: Kaique Victor Mário Farias
+cpf: 178.224.423-92
+rg: 11.096.662-4
+data_nasc: 26/07/1959
+email: kaiquevictorfarias@gmai.com
+cep: 71725-010
+endereco: Rodovia DF-003
+numero: 794
+bairro: Candangolândia
+cestado: DF
+celular: (61) 99198-4566
+
+nome: Victor Severino Cauã Barbosa
+cpf: 962.668.533-61
+rg: 42.556.073-9
+data_nasc: 11/01/1974
+email: victorseverinobarbosa@arosacampinas.com.br
+cep: 96506-678
+endereco: Rua Milan Kras
+numero: 901
+bairro: Barcelos
+cestado: RS
+celular: (51) 99230-5975
+
+
+nome: Pietra Benedita Rafaela Monteiro
+cpf: 960.689.632-33
+rg: 31.918.812-7
+data_nasc: 16/04/1954
+email: pietra_benedita_monteiro@julianacaran.com.br
+cep: 49004-421
+endereco: Rua C
+numero: 497
+bairro: Zona de Expansão (Robalo)
+cestado: SE
+celular: (79) 99760-2043
+
+
+nome: Leonardo Diego Heitor Araújo
+cpf: 754.331.221-23
+rg: 46.190.862-1
+data_nasc: 16/01/2002
+email: leonardo.diego.araujo@greenbikeshop.com.br
+cep: 53635-145
+endereco: Rua Nossa Senhora do Rosário
+numero: 135
+bairro: Cruz do Rebouças
+cestado: PE
+celular: (81) 98612-3541
+
+
+nome: Julia Josefa Isabela das Neves
+cpf: 702.272.105-06
+rg: 47.378.852-4
+data_nasc: 08/02/1985
+email: julia_josefa_dasneves@eletrolexeng.com.br
+cep: 60349-740
+endereco: Rua P
+numero: 836
+bairro: Vila Velha
+cestado: CE
+celular: (85) 98185-1601
+
+
+nome: Luana Nicole Dias
+cpf: 578.964.744-84
+rg: 19.297.011-2
+data_nasc: 01/08/1997
+email: luana_nicole_dias@vegacon.com.br
+cep: 76900-244
+endereco: Rua José Pires
+numero: 556
+bairro: Urupá
+cestado: RO
+celular: (69) 99954-8561
+
+
+nome: Giovanni Yuri Isaac Santos
+cpf: 186.889.359-63
+rg: 17.126.802-7
+data_nasc: 04/05/1995
+email: giovanni-santos95@grupoarteoficio.com.br
+cep: 59082-190
+endereco: Rua Humberto Monte
+numero: 863
+bairro: Capim Macio
+cestado: RN
+celular: (84) 98633-2063
+
+
+nome: Cauã César Martins
+cpf: 233.582.939-47
+rg: 28.135.959-3
+data_nasc: 26/11/1953
+email: caua-martins72@clubedorei.com.br
+cep: 72911-078
+endereco: Quadra Quadra 93
+numero: 1000
+bairro: Cidade Jardim
+cestado: GO
+celular: (61) 99355-8174
+
+
+nome: Vanessa Daiane Nina Moraes
+cpf: 610.553.947-96
+rg: 40.823.067-8
+data_nasc: 08/02/1970
+email: vanessa_moraes@superigi.com.br
+cep: 78150-522
+endereco: Rua Ametista
+numero: 924
+bairro: Santa Isabel
+cestado: MT
+celular: (65) 98105-9541
+
+
+nome: Antonio Raimundo Joaquim Viana
+cpf: 779.742.926-01
+rg: 46.098.489-5
+data_nasc: 13/08/1951
+email: antonio-viana99@iedi.com.br
+cep: 71725-023
+endereco: Condomínio Residencial
+numero: 948
+bairro: Candangolândia
+cestado: DF
+celular: (61) 98780-1466
+
+
+nome: Marcos Vinicius Sebastião Mendes
+cpf: 573.219.416-98
+rg: 45.083.934-5
+data_nasc: 24/07/1989
+email: marcos_vinicius_mendes@gmaill.com
+cep: 45052-004
+endereco: Avenida Terezina
+numero: 840
+bairro: Bateias
+cestado: BA
+celular: (77) 98309-0401
+
+
+nome: Fernanda Juliana Marli Campos
+cpf: 004.527.837-71
+rg: 27.709.263-2
+data_nasc: 16/08/1984
+email: fernanda_campos@isometro.com.br
+cep: 60356-660
+endereco: Rua Engenheiro Seraine
+numero: 854
+bairro: Antônio Bezerra
+cestado: CE
+celular: (85) 98108-4438
+
+
+nome: Daiane Antônia Gabriela Lima
+cpf: 266.539.646-71
+rg: 25.875.894-6
+data_nasc: 22/01/1946
+email: daiane-lima91@trbvm.com
+cep: 69553-030
+endereco: Travessa Cafarnaum
+numero: 859
+bairro: Jerusalém
+cestado: AM
+celular: (97) 99454-5860
+
+
+nome: Larissa Sophia Moreira
+cpf: 967.763.403-82
+rg: 22.719.595-4
+data_nasc: 01/07/1949
+email: larissa_moreira@directnet.com
+cep: 72329-225
+endereco: Quadra QR 433 Conjunto 19
+numero: 996
+bairro: Samambaia Norte (Samambaia)
+cestado: DF
+celular: (61) 98207-3299
+
+
+nome: Nelson Sebastião Anthony Almeida
+cpf: 300.685.477-22
+rg: 37.922.715-0
+data_nasc: 11/06/1990
+email: nelson_almeida@caocarinho.com.br
+cep: 58307-030
+endereco: Rua Aristéia Francisca
+numero: 742
+bairro: Centro
+cestado: PB
+celular: (83) 99368-5990
+
+
+nome: Gabriela Sarah Brito
+cpf: 822.133.371-95
+rg: 19.920.356-8
+data_nasc: 11/09/1973
+email: gabrielasarahbrito@contabilidadevictoria.com.br
+cep: 13251-537
+endereco: Rua Basílio Reinaldi
+numero: 145
+bairro: Jardim Alto de Santa Cruz
+cestado: SP
+celular: (11) 99899-5923
+
+
+nome: Raimunda Antonella Ribeiro
+cpf: 025.311.199-49
+rg: 27.096.059-4
+data_nasc: 13/02/1963
+email: raimunda-ribeiro76@bodyfast.com.br
+cep: 59042-008
+endereco: 1ª Travessa Mário Lira
+numero: 703
+bairro: Quintas
+cestado: RN
+celular: (84) 98885-1103
+
+
+nome: Sophia Mariane da Cruz
+cpf: 366.453.428-02
+rg: 23.719.618-9
+data_nasc: 16/06/2000
+email: sophiamarianedacruz@acaocontabilsjc.com.br
+cep: 76912-681
+endereco: Rua Cedro
+numero: 419
+bairro: Jorge Teixeira
+cestado: RO
+celular: (69) 98833-5359
+
+
+nome: Jéssica Isabel Stella Porto
+cpf: 156.474.256-31
+rg: 25.482.347-6
+data_nasc: 26/09/2004
+email: jessica_porto@signainfo.com.br
+cep: 78042-310
+endereco: Rua das Oliveiras
+numero: 316
+bairro: Novo Tempo
+cestado: MT
+celular: (65) 98541-4683
+
+
+nome: Maya Aparecida Ayla Pereira
+cpf: 899.809.376-61
+rg: 31.623.601-9
+data_nasc: 10/04/1942
+email: maya_pereira@lojascentrodamoda.com.br
+cep: 49043-463
+endereco: Rua Vinícius de Moraes
+numero: 681
+bairro: Santa Maria
+cestado: SE
+celular: (79) 98181-8108
+
+
+nome: Giovanni Kaique Moura
+cpf: 195.843.472-84
+rg: 22.238.695-2
+data_nasc: 21/01/1982
+email: giovannikaiquemoura@allcor.com.br
+cep: 94967-020
+endereco: Rua Quero-quero
+numero: 565
+bairro: Nova Esperança
+cestado: RS
+celular: (51) 99939-3588
+
+
+nome: Marcos Vinicius Marcelo Benjamin Carvalho
+cpf: 321.971.327-09
+rg: 43.619.095-3
+data_nasc: 25/04/1978
+email: marcosviniciuscarvalho@unitau.com.br
+cep: 66840-375
+endereco: Travessa Francisco Gadelha
+numero: 455
+bairro: São João do Outeiro (Outeiro)
+cestado: PA
+celular: (91) 99195-1066
+
+
+nome: Henrique Heitor Breno Rocha
+cpf: 949.071.289-24
+rg: 44.403.788-3
+data_nasc: 17/08/1990
+email: henrique.heitor.rocha@wikimetal.com.br
+cep: 66816-390
+endereco: Rua Imperador
+numero: 750
+bairro: Pratinha (Icoaraci)
+cestado: PA
+celular: (91) 99754-3869
+
+
+nome: Raimunda Vanessa Rosângela Fogaça
+cpf: 016.614.385-55
+rg: 14.986.714-1
+data_nasc: 14/10/1967
+email: raimunda.vanessa.fogaca@powerblade.com.br
+cep: 69065-165
+endereco: Beco João Sabino
+numero: 529
+bairro: Cachoeirinha
+cestado: AM
+celular: (92) 99604-9292
+
+
+nome: Emily Natália Gonçalves
+cpf: 404.118.769-96
+rg: 34.795.386-4
+data_nasc: 04/06/1981
+email: emily_goncalves@rmsolutions.inf.br
+cep: 57085-102
+endereco: Rua Rio de Janeiro
+numero: 628
+bairro: Benedito Bentes
+cestado: AL
+celular: (82) 99551-0796
+
+
+nome: Milena Mariana Fátima dos Santos
+cpf: 371.106.508-20
+rg: 11.519.661-4
+data_nasc: 10/09/1954
+email: milenamarianadossantos@djapan.com.br
+cep: 24474-750
+endereco: Travessa Iris Santiago
+numero: 453
+bairro: Itaúna
+cestado: RJ
+celular: (21) 98510-0133
+
+
+nome: André Joaquim da Mota
+cpf: 511.710.078-68
+rg: 12.875.110-1
+data_nasc: 20/10/1972
+email: andre_damota@nacirembalagens.com.br
+cep: 76913-589
+endereco: Rua Rodrigues Alves
+numero: 513
+bairro: São Pedro
+cestado: RO
+celular: (69) 99859-2186
+
+
+nome: Isabela Simone Nina Alves
+cpf: 455.113.755-35
+rg: 30.332.343-7
+data_nasc: 15/02/1945
+email: isabela.simone.alves@pharmaterra.com.br
+cep: 70275-090
+endereco: Quadra SQS 212 Bloco I
+numero: 671
+bairro: Asa Sul
+cestado: DF
+celular: (61) 99869-5158
+
+
+nome: Giovana Sandra Camila Duarte
+cpf: 956.314.382-59
+rg: 31.984.218-6
+data_nasc: 23/11/1952
+email: giovana_sandra_duarte@regional.com.br
+cep: 77062-222
+endereco: Rua Santa Rosa
+numero: 150
+bairro: Jardim Aeroporto (Taquaralto)
+cestado: TO
+celular: (63) 99795-8990
+
+
+nome: Aline Tatiane Lopes
+cpf: 752.775.268-89
+rg: 31.192.160-7
+data_nasc: 11/09/1983
+email: alinetatianelopes@oas.com
+cep: 63043-285
+endereco: Rua Antônio Canuto de Souza
+numero: 395
+bairro: Frei Damião
+cestado: CE
+celular: (88) 99481-7799
